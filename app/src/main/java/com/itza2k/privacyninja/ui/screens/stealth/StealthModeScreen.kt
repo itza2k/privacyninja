@@ -1,5 +1,8 @@
 package com.itza2k.privacyninja.ui.screens.stealth
 
+import android.os.Build
+import android.provider.Settings
+import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -31,6 +34,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.LockOpen
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -39,6 +43,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -51,12 +56,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.itza2k.privacyninja.R
 import com.itza2k.privacyninja.repository.PrivacyRepository
 import com.itza2k.privacyninja.ui.theme.NinjaAccent
@@ -71,6 +78,9 @@ fun StealthModeScreen(stealthModeService: PrivacyRepository) {
     val isStealthModeEnabled by stealthModeService.isStealthModeEnabled.collectAsState(initial = false)
     var showActivationAnimation by remember { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
+    val context = LocalContext.current
+    var showDnsDialog by remember { mutableStateOf(false) }
+    var showSensorDialog by remember { mutableStateOf(false) }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -235,7 +245,7 @@ fun StealthModeScreen(stealthModeService: PrivacyRepository) {
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Button(
-                        onClick = { stealthModeService.openPrivateDnsSettings() },
+                        onClick = { showDnsDialog = true },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp)
@@ -261,6 +271,117 @@ fun StealthModeScreen(stealthModeService: PrivacyRepository) {
                         )
                     }
                 }
+            }
+
+            if (showDnsDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDnsDialog = false },
+                    title = { Text("Recommended DNS Providers") },
+                    text = {
+                        Column {
+                            Text("Cloudflare: 1.1.1.1 (Privacy-focused, no logs)")
+                            Text("Google: 8.8.8.8 (Fast, reliable)")
+                            Text("AdGuard: 94.140.14.14 (Blocks ads, privacy)")
+                            Text("Quad9: 9.9.9.9 (Security, privacy)")
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("You can enter these in the Private DNS settings.\nTap Continue to open settings.")
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            showDnsDialog = false
+                            stealthModeService.openPrivateDnsSettings()
+                        }) { Text("Continue") }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showDnsDialog = false }) { Text("Cancel") }
+                    }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Sensors, Camera, Microphone Privacy Card
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(6.dp, RoundedCornerShape(20.dp)),
+                colors = CardDefaults.cardColors(containerColor = NinjaDarkGrey.copy(alpha = 0.95f)),
+                shape = RoundedCornerShape(20.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Filled.Lock,
+                            contentDescription = "Sensors icon",
+                            tint = NinjaAccent,
+                            modifier = Modifier.size(32.dp)
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Text(
+                            text = "Sensors, Camera & Mic",
+                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp),
+                            fontWeight = FontWeight.Bold,
+                            color = TextPrimary
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = "For maximum privacy, you can disable sensors, camera, and microphone access for all apps. On Android 12+, you can use the system toggles.",
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 15.sp),
+                        textAlign = TextAlign.Center,
+                        color = TextSecondary,
+                        lineHeight = 24.sp
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Button(
+                        onClick = { showSensorDialog = true },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        shape = RoundedCornerShape(14.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = NinjaAccent,
+                            contentColor = TextPrimary
+                        )
+                    ) {
+                        Text("Open Privacy Settings")
+                    }
+                }
+            }
+
+            if (showSensorDialog) {
+                AlertDialog(
+                    onDismissRequest = { showSensorDialog = false },
+                    title = { Text("Sensors & Privacy") },
+                    text = {
+                        Column {
+                            Text("- Open the Privacy Dashboard to manage camera, mic, and location access.\n- On Android 12+, use the quick settings toggles for Camera/Mic.\n- You can also review app permissions for more control.")
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            showSensorDialog = false
+                            // Try to open privacy dashboard or app permissions
+                            try {
+                                if (Build.VERSION.SDK_INT >= 31) { // Android 12+
+                                    context.startActivity(Intent("android.settings.PRIVACY_DASHBOARD_SETTINGS"))
+                                } else {
+                                    context.startActivity(Intent(Settings.ACTION_APPLICATION_SETTINGS))
+                                }
+                            } catch (e: Exception) {
+                                // fallback
+                                context.startActivity(Intent(Settings.ACTION_SETTINGS))
+                            }
+                        }) { Text("Continue") }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showSensorDialog = false }) { Text("Cancel") }
+                    }
+                )
             }
 
             Spacer(modifier = Modifier.height(35.dp))
@@ -311,3 +432,4 @@ fun StealthModeScreen(stealthModeService: PrivacyRepository) {
         }
     }
 }
+
