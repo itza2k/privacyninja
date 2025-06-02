@@ -22,4 +22,18 @@ data class PrivacyStatus(
 
         return maxOf(0, minOf(score, 100)) // Ensure score is between 0 and 100
     }
+    fun getPrivacyLevel(): PrivacyLevel {
+        val score = calculatePrivacyScore()
+        return when {
+            score >= 80 -> PrivacyLevel.SECURE
+            score >= 50 -> PrivacyLevel.WARNING
+            else -> PrivacyLevel.DANGER
+        }
+    }
+}
+
+enum class PrivacyLevel {
+    SECURE,   // Good privacy status
+    WARNING,  // Some privacy concerns
+    DANGER    // Serious privacy issues
 }
