@@ -80,9 +80,15 @@ fun PermissionPatrolScreen(privacyRepository: PrivacyRepository) {
         privacyRepository.updatePrivacyData()
     }
 
-    val filteredApps = remember(allApps, searchQuery) {
-        if (searchQuery.isEmpty()) allApps
-        else allApps.filter {
+    // Merge suspiciousApps and allApps, removing duplicates by packageName
+    val mergedApps = remember(suspiciousApps, allApps) {
+        (suspiciousApps + allApps)
+            .distinctBy { it.packageName }
+    }
+
+    val filteredApps = remember(mergedApps, searchQuery) {
+        if (searchQuery.isEmpty()) mergedApps
+        else mergedApps.filter {
             it.appName.contains(searchQuery, ignoreCase = true) ||
                     it.packageName.contains(searchQuery, ignoreCase = true)
         }
@@ -384,3 +390,4 @@ fun PermissionItem(permission: Permission) {
         }
     }
 }
+
