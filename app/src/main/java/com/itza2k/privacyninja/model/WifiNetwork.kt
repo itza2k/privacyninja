@@ -75,6 +75,7 @@ data class WifiNetwork(
 
         return rating.coerceIn(0, 100)
     }
+
     fun getPrivacyLevel(): PrivacyLevel {
         val rating = getPrivacyRating()
         return when {
@@ -83,4 +84,14 @@ data class WifiNetwork(
             else -> PrivacyLevel.DANGER
         }
     }
+
+    fun getChannel(): Int {
+        // 2.4GHz: channel = (freq - 2407) / 5, 5GHz: channel = (freq - 5000) / 5
+        return when {
+            frequency in 2412..2484 -> (frequency - 2407) / 5
+            frequency in 5170..5825 -> (frequency - 5000) / 5
+            else -> -1 // Unknown
+        }
+    }
 }
+

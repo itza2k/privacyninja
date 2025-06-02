@@ -170,7 +170,10 @@ fun NetworkNinjaScreen(privacyRepository: PrivacyRepository) {
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             Text(
-                                text = if (networkStatus.isConnected) networkStatus.ssid else "Not Connected",
+                                text = if (networkStatus.isConnected) {
+                                    val displaySsid = if (networkStatus.ssid.isBlank() || networkStatus.ssid.equals("<unknown ssid>", ignoreCase = true)) "Connected" else networkStatus.ssid
+                                    displaySsid
+                                } else "Not Connected",
                                 style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp),
                                 fontWeight = FontWeight.SemiBold,
                                 color = TextPrimary
@@ -594,6 +597,7 @@ fun WifiNetworkCard(network: WifiNetwork) {
                     Spacer(modifier = Modifier.height(16.dp))
                     DetailRow("Security Type", network.getSecurityType())
                     DetailRow("Frequency", "${network.frequency} MHz")
+                    DetailRow("Channel", if (network.getChannel() > 0) network.getChannel().toString() else "Unknown")
                     DetailRow("BSSID", network.bssid)
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
@@ -652,3 +656,4 @@ fun DetailRow(label: String, value: String) {
         )
     }
 }
+
