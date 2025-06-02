@@ -53,4 +53,34 @@ data class WifiNetwork(
         }
     }
 
+    fun getPrivacyRating(): Int {
+        var rating = 0
+        rating += when {
+            capabilities.contains("WPA3") -> 50
+            capabilities.contains("WPA2") -> 40
+            capabilities.contains("WPA") -> 30
+            capabilities.contains("WEP") -> 10
+            else -> 0
+        }
+        val lowerSsid = ssid.lowercase()
+        rating -= when {
+            lowerSsid.contains("public") || lowerSsid.contains("free") -> 20
+            lowerSsid.contains("guest") -> 15
+            lowerSsid.contains("cafe") || lowerSsid.contains("coffee") -> 10
+            lowerSsid.contains("airport") || lowerSsid.contains("hotel") -> 15
+            else -> 0
+        }
+
+        rating += getSignalStrengthPercent() / 5
+
+        return rating.coerceIn(0, 100)
+    }
+    fun getPrivacyLevel(): PrivacyLevel {
+        val rating = getPrivacyRating()
+        return when {
+            rating >= 70 -> PrivacyLevel.SECURE
+            rating >= 40 -> PrivacyLevel.WARNING
+            else -> PrivacyLevel.DANGER
+        }
+    }
 }
