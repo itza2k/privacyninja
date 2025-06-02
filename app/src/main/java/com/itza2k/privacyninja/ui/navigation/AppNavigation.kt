@@ -69,3 +69,42 @@ val items = listOf(
     Screen.StealthMode
 )
 
+@Composable
+fun AppNavigation(privacyRepository: PrivacyRepository) {
+    val navController = rememberNavController()
+
+    Scaffold(
+        bottomBar = { BottomNavigationBar(navController) }
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = Screen.Dashboard.route,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable(Screen.Dashboard.route) {
+                DashboardScreen(
+                    privacyRepository = privacyRepository,
+                    onNavigateToPermissionPatrol = {
+                        navController.navigate(Screen.PermissionPatrol.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                )
+            }
+            composable(Screen.NetworkNinja.route) {
+                NetworkNinjaScreen(privacyRepository)
+            }
+            composable(Screen.PermissionPatrol.route) {
+                PermissionPatrolScreen(privacyRepository)
+            }
+            composable(Screen.StealthMode.route) {
+                StealthModeScreen(privacyRepository)
+            }
+        }
+    }
+}
+
