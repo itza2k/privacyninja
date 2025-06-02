@@ -108,3 +108,45 @@ fun AppNavigation(privacyRepository: PrivacyRepository) {
     }
 }
 
+@Composable
+fun BottomNavigationBar(navController: NavHostController) {
+    Surface(
+        modifier = Modifier
+            .shadow(8.dp),
+        color = Color(0xFF000000)
+    ) {
+        NavigationBar(
+            modifier = Modifier.height(69.dp),
+            containerColor = Color.Transparent,
+            contentColor = TextSecondary
+        ) {
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentDestination = navBackStackEntry?.destination
+            val isSelected = { screen: Screen ->
+                currentDestination?.hierarchy?.any { it.route == screen.route } == true
+            }
+
+            items.forEach { screen ->
+                NavigationBarItem(
+                    icon = screen.icon,
+                    selected = isSelected(screen),
+                    onClick = {
+                        navController.navigate(screen.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = NinjaAccent,
+                        unselectedIconColor = TextSecondary.copy(alpha = 0.7f),
+                        indicatorColor = Color.Transparent
+                    ),
+                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+                )
+            }
+        }
+    }
+}
