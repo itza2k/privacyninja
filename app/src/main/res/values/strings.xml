@@ -1,0 +1,47 @@
+<resources>
+    <!-- App Name -->
+    <string name="app_name">Privacy Ninja</string>
+
+    <!-- Navigation -->
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_network_ninja">Network Ninja</string>
+    <string name="nav_permission_patrol">Permission Patrol</string>
+    <string name="nav_stealth_mode">Stealth Mode</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_title">Privacy Dashboard</string>
+    <string name="dashboard_subtitle">Your privacy status at a glance</string>
+    <string name="privacy_score">Privacy Score</string>
+    <string name="status_secure">Secure</string>
+    <string name="status_warning">Warning</string>
+    <string name="status_danger">Danger</string>
+
+    <!-- Network Ninja -->
+    <string name="network_ninja_title">Network Ninja</string>
+    <string name="network_ninja_subtitle">Monitor your network connections</string>
+    <string name="wifi_status">Wi-Fi Status</string>
+    <string name="wifi_secure">Secure Connection</string>
+    <string name="wifi_unsecure">Unsecure Connection</string>
+    <string name="wifi_not_connected">Not Connected</string>
+    <string name="enable_vpn">Enable VPN</string>
+    <string name="disable_vpn">Disable VPN</string>
+    <string name="network_details">Network Details</string>
+
+    <!-- Permission Patrol -->
+    <string name="permission_patrol_title">Permission Patrol</string>
+    <string name="permission_patrol_subtitle">Monitor app permissions</string>
+    <string name="suspicious_apps">Suspicious Apps</string>
+    <string name="no_suspicious_apps">No suspicious apps detected</string>
+    <string name="revoke_permission">Revoke Permission</string>
+    <string name="app_details">App Details</string>
+    <string name="permission_details">Permission Details</string>
+
+    <!-- Stealth Mode -->
+    <string name="stealth_mode_title">Stealth Mode</string>
+    <string name="stealth_mode_subtitle">Enhance your privacy with one tap</string>
+    <string name="stealth_mode_enabled">Stealth Mode Enabled</string>
+    <string name="stealth_mode_disabled">Stealth Mode Disabled</string>
+    <string name="enable_stealth_mode">Enable Stealth Mode</string>
+    <string name="disable_stealth_mode">Disable Stealth Mode</string>
+    <string name="stealth_mode_description">Stealth Mode disables non-essential permissions and connects to a VPN for enhanced privacy</string>
+</resources>
