@@ -548,8 +548,9 @@ fun NetworkStatusCard(securityLevel: SecurityLevel, ssid: String, isVpnActive: B
                     color = TextPrimary
                 )
                 if (securityLevel != SecurityLevel.UNKNOWN) {
+                    val displaySsid = if (ssid.isBlank() || ssid.equals("<unknown ssid>", ignoreCase = true)) "Not Connected" else ssid
                     Text(
-                        text = ssid,
+                        text = displaySsid,
                         style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp),
                         color = TextSecondary
                     )
@@ -830,3 +831,4 @@ private fun handleRecommendationAction(
         }
     }
 }
+
