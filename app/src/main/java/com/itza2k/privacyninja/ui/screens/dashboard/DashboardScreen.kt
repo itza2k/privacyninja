@@ -587,3 +587,246 @@ fun NetworkStatusCard(securityLevel: SecurityLevel, ssid: String, isVpnActive: B
     }
 }
 
+@Composable
+fun SuspiciousAppsCard(suspiciousAppsCount: Int) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(6.dp, RoundedCornerShape(20.dp)),
+        colors = CardDefaults.cardColors(containerColor = NinjaDarkGrey.copy(alpha = 0.95f)),
+        shape = RoundedCornerShape(20.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(24.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Security,
+                contentDescription = null,
+                tint = if (suspiciousAppsCount > 0) DangerRed else SecureGreen,
+                modifier = Modifier.size(32.dp)
+            )
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 16.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.permission_patrol_title),
+                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp),
+                    fontWeight = FontWeight.SemiBold,
+                    color = TextPrimary
+                )
+                Text(
+                    text = if (suspiciousAppsCount > 0) {
+                        stringResource(R.string.suspicious_apps) + ": $suspiciousAppsCount"
+                    } else {
+                        stringResource(R.string.no_suspicious_apps)
+                    },
+                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp),
+                    color = if (suspiciousAppsCount > 0) DangerRed else SecureGreen
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun StealthModeCard(isEnabled: Boolean) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(6.dp, RoundedCornerShape(20.dp)),
+        colors = CardDefaults.cardColors(containerColor = NinjaDarkGrey.copy(alpha = 0.95f)),
+        shape = RoundedCornerShape(20.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(24.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Lock,
+                contentDescription = null,
+                tint = if (isEnabled) SecureGreen else TextSecondary,
+                modifier = Modifier.size(32.dp)
+            )
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 16.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.stealth_mode_title),
+                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp),
+                    fontWeight = FontWeight.SemiBold,
+                    color = TextPrimary
+                )
+                Text(
+                    text = if (isEnabled) {
+                        stringResource(R.string.stealth_mode_enabled)
+                    } else {
+                        stringResource(R.string.stealth_mode_disabled)
+                    },
+                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp),
+                    color = if (isEnabled) SecureGreen else TextSecondary
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun PrivacyStatsCard(
+    suspiciousAppsCount: Int,
+    totalAppsCount: Int,
+    isVpnActive: Boolean,
+    isStealthModeEnabled: Boolean
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(6.dp, RoundedCornerShape(20.dp)),
+        colors = CardDefaults.cardColors(containerColor = NinjaDarkGrey.copy(alpha = 0.95f)),
+        shape = RoundedCornerShape(20.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Privacy Stats",
+                style = MaterialTheme.typography.titleLarge.copy(fontSize = 22.sp),
+                fontWeight = FontWeight.SemiBold,
+                color = TextPrimary
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Apps,
+                        contentDescription = null,
+                        tint = if (suspiciousAppsCount > 0) WarningYellow else SecureGreen,
+                        modifier = Modifier.size(40.dp)
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "$totalAppsCount",
+                        style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp),
+                        fontWeight = FontWeight.Bold,
+                        color = TextPrimary
+                    )
+                    Text(
+                        text = "Apps",
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 14.sp),
+                        color = TextSecondary
+                    )
+                }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Security,
+                        contentDescription = null,
+                        tint = if (suspiciousAppsCount > 0) DangerRed else SecureGreen,
+                        modifier = Modifier.size(40.dp)
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "$suspiciousAppsCount",
+                        style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp),
+                        fontWeight = FontWeight.Bold,
+                        color = if (suspiciousAppsCount > 0) DangerRed else SecureGreen
+                    )
+                    Text(
+                        text = "Suspicious",
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 14.sp),
+                        color = TextSecondary
+                    )
+                }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Wifi,
+                        contentDescription = null,
+                        tint = if (isVpnActive) SecureGreen else WarningYellow,
+                        modifier = Modifier.size(40.dp)
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = if (isVpnActive) "On" else "Off",
+                        style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp),
+                        fontWeight = FontWeight.Bold,
+                        color = if (isVpnActive) SecureGreen else WarningYellow
+                    )
+                    Text(
+                        text = "VPN",
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 14.sp),
+                        color = TextSecondary
+                    )
+                }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Lock,
+                        contentDescription = null,
+                        tint = if (isStealthModeEnabled) SecureGreen else WarningYellow,
+                        modifier = Modifier.size(40.dp)
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = if (isStealthModeEnabled) "On" else "Off",
+                        style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp),
+                        fontWeight = FontWeight.Bold,
+                        color = if (isStealthModeEnabled) SecureGreen else WarningYellow
+                    )
+                    Text(
+                        text = "Stealth",
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 14.sp),
+                        color = TextSecondary
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun handleRecommendationAction(
+    actionType: String,
+    privacyRepository: PrivacyRepository,
+    context: Context
+) {
+    when (actionType) {
+        "ENABLE_VPN" -> {
+            if (!privacyRepository.openVpnApp()) {
+                privacyRepository.openVpnSettings()
+            }
+        }
+        "REVIEW_PERMISSIONS" -> {
+            Toast.makeText(context, "Navigate to Permission Patrol", Toast.LENGTH_SHORT).show()
+        }
+        "ENABLE_STEALTH_MODE" -> {
+            privacyRepository.enableStealthMode()
+        }
+        "PASSWORD_TIPS" -> {
+            Toast.makeText(
+                context,
+                "Use a password manager and unique passwords for each account",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+        "DATA_BREACH_CHECK" -> {
+            Toast.makeText(
+                context,
+                "Check haveibeenpwned.com to see if your accounts have been compromised",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+}
