@@ -294,6 +294,19 @@ fun StealthModeScreen(stealthModeService: PrivacyRepository) {
 
             Spacer(modifier = Modifier.height(30.dp))
 
+            Text(
+                text = "Developed by Akkshay",
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold
+                ),
+                color = NinjaAccent,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(NinjaDarkGrey.copy(alpha = 0.3f))
+                    .clickable { uriHandler.openUri("https://itza2k.github.io") }
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+            )
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
